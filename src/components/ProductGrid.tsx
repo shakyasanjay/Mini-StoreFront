@@ -31,7 +31,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
             <Link
               key={p.id}
               to={`/products/${p.id}`}
-              className="block relative bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
+              className="block relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
             >
               {/* Left-Side Sale Badge */}
               {onSale && (
@@ -56,9 +56,9 @@ export default function ProductGrid({ products }: { products: Product[] }) {
 
               {/* Product Info */}
               <div className="p-4">
-                <h3 className="text-sm font-medium text-gray-900">{p.title}</h3>
+                <h3 className="text-sm font-medium text-white">{p.title}</h3>
                 <div className="mt-1 flex items-center gap-2">
-                  <span className="text-gray-900 font-semibold">
+                  <span className="text-white font-semibold">
                     ${p.price.toFixed(2)}
                   </span>
                   {onSale && (

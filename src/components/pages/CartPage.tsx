@@ -1,11 +1,37 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../contexts/CartContext";
+import Toast from "../Toast";
+import { GiShoppingBag } from "react-icons/gi";
 
 const CartPage = () => {
   const { lines, removeFromCart, total } = useCart();
+  const [toast, setToast] = useState<string>("");
 
+  const salesTaxRate = 0.06;
+  const salesTax = total * salesTaxRate;
+  const shipping = 0;
+
+  const handleRemove = (id: number, color?: string, size?: string) => {
+    removeFromCart(id, color, size);
+    setToast("Item removed from cart");
+    setTimeout(() => setToast(""), 5000);
+  };
+
+  // ✅ Show nice empty cart screen when no items
   if (!lines.length)
-    return <main className="p-8 text-center text-lg">Your Cart is empty</main>;
+    return (
+      <main className="flex flex-col items-center justify-center h-[70vh] text-center text-gray-300">
+        <GiShoppingBag  className="w-16 h-16 mb-4 opacity-70" />
+        <p className="text-lg font-medium">No items in cart</p>
+        <Link
+          to="/products"
+          className="mt-6 bg-amber-500 text-white px-6 py-3 rounded rounded-2xl hover:bg-amber-400"
+        >
+          Continue Shopping
+        </Link>
+      </main>
+    );
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-8">
@@ -21,7 +47,7 @@ const CartPage = () => {
             }`}
             className="flex items-start justify-between border-b pb-6 last:border-b-0"
           >
-            {/* Product Image + Info wrapped in link */}
+            {/* Product Image + Info */}
             <Link
               to={`/products/${l.product.id}`}
               className="flex flex-1 items-start hover:opacity-90"
@@ -34,7 +60,6 @@ const CartPage = () => {
               <div className="flex-1 px-4">
                 <div className="font-medium text-lg">{l.product.title}</div>
 
-                {/* Show color and size in the same line */}
                 {(l.color || l.size) && (
                   <div className="text-sm text-gray-600">
                     {l.color && (
@@ -64,8 +89,8 @@ const CartPage = () => {
                 ${(l.product.price * l.qty).toFixed(2)}
               </div>
               <button
-                onClick={() => removeFromCart(l.product.id, l.color, l.size)}
-                className="text-sm text-red-600 hover:underline mt-4"
+                onClick={() => handleRemove(l.product.id, l.color, l.size)}
+                className="text-sm text-red-600 hover:underline mt-4 cursor-pointer"
               >
                 Remove
               </button>
@@ -74,16 +99,29 @@ const CartPage = () => {
         ))}
       </ul>
 
-      {/* Total Box */}
-      <div className="mt-8 border rounded p-4 bg-gray-800 flex justify-between items-center">
-        <div className="text-sm text-gray-200">
-          Your Total
-          <br />
-          <span className="text-xs">
-            Shipping will be calculated in the next step
-          </span>
+      {/* Total Summary Box */}
+      <div className="mt-8 border rounded p-6 bg-gray-800 text-gray-100">
+        <div className="flex justify-between mb-2">
+          <span>Subtotal</span>
+          <span>${total.toFixed(2)}</span>
         </div>
-        <div className="text-lg font-bold">${total.toFixed(2)}</div>
+
+        <div className="flex justify-between mb-2">
+          <span>Sales Tax</span>
+          <span>${salesTax.toFixed(2)}</span>
+        </div>
+
+        <div className="flex justify-between mb-2">
+          <span>Shipping</span>
+          <span className="text-gray-400 text-sm">Calculated at checkout</span>
+        </div>
+
+        <hr className="my-3 border-gray-700" />
+
+        <div className="flex justify-between text-lg font-bold">
+          <span>Total</span>
+          <span>${(total + salesTax + shipping).toFixed(2)}</span>
+        </div>
       </div>
 
       {/* Checkout Button */}
@@ -92,6 +130,9 @@ const CartPage = () => {
           Checkout
         </button>
       </div>
+
+      {/* Toast */}
+      <Toast message={toast} />
     </main>
   );
 };

@@ -29,7 +29,7 @@ const mockProducts: Product[] = [
     colors: ["blue", "dark-blue"],
     size: ["s", "m", "l", "xl"],
     rating: { rate: 4.5, count: 200 },
-    stock: 18,
+    stock: 0,
   },
   {
     id: 3,
@@ -192,7 +192,7 @@ const mockProducts: Product[] = [
     category: "Bottom",
     image: "https://placehold.co/500x500?text=Pleated+Skirt",
     colors: ["beige", "black", "pink"],
-    size: ["s", "m", "l"],
+    size: ["xs","s", "m", "l"],
     rating: { rate: 4.5, count: 70 },
     stock: 18,
   },

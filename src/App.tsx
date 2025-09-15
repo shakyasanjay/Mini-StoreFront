@@ -1,11 +1,12 @@
-import Footer from './components/Footer';
-import Header from './components/Header';
-import Home from './components/Home';
-import CartPage from './components/pages/CartPage';
-import Catalog from './components/pages/Catalog';
-import ProductDetail from './components/pages/ProductDetail';
-import { CartProvider } from './contexts/CartContext'
-import { Route, Routes } from 'react-router-dom';
+import About from "./components/About";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import Home from "./components/Home";
+import CartPage from "./components/pages/CartPage";
+import Catalog from "./components/pages/Catalog";
+import ProductDetail from "./components/pages/ProductDetail";
+import { CartProvider } from "./contexts/CartContext";
+import { Route, Routes } from "react-router-dom";
 
 const App = () => {
   return (
@@ -14,7 +15,10 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/products" element={<Catalog />} />
+          <Route path="/men" element={<Catalog gender="male" />} />
+          <Route path="/women" element={<Catalog gender="female" />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<CartPage />} />
         </Routes>
@@ -22,6 +26,6 @@ const App = () => {
       </div>
     </CartProvider>
   );
-}
+};
 
-export default App
+export default App;
