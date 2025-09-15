@@ -17,6 +17,15 @@ export default function ProductGrid({ products }: { products: Product[] }) {
     startIndex + productsPerPage
   );
 
+  // Helper to check if product is new
+  const isNewProduct = (createdAt: string | Date) => {
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const diffDays =
+      (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+    return diffDays <= 30; // last 30 days
+  };
+
   return (
     <div>
       {/* Product Grid */}
@@ -26,6 +35,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
           const discount =
             onSale &&
             Math.round(((p.compare_price! - p.price) / p.compare_price!) * 100);
+          const isNew = p.create_at && isNewProduct(p.create_at);
 
           return (
             <Link
@@ -33,17 +43,27 @@ export default function ProductGrid({ products }: { products: Product[] }) {
               to={`/products/${p.id}`}
               className="block relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
             >
-              {/* Left-Side Sale Badge */}
+              {/* Badges */}
               {onSale && (
-                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
-                  Sale
-                </span>
+                <>
+                  {/* Sale Badge */}
+                  <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                    Sale
+                  </span>
+
+                  {/* Discount Badge */}
+                  {discount && (
+                    <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                      -{discount}%
+                    </span>
+                  )}
+                </>
               )}
 
-              {/* Right-Side Discount Badge */}
-              {onSale && discount && (
-                <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
-                  -{discount}%
+              {/* New Badge (only if created within last 30 days) */}
+              {!onSale && isNew && (
+                <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                  New
                 </span>
               )}
 

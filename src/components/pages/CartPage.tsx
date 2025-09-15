@@ -26,7 +26,7 @@ const CartPage = () => {
         <p className="text-lg font-medium">No items in cart</p>
         <Link
           to="/products"
-          className="mt-6 bg-amber-500 text-white px-6 py-3 rounded rounded-2xl hover:bg-amber-400"
+          className="mt-6 bg-amber-500 text-white px-6 py-3 rounded-2xl hover:bg-amber-400"
         >
           Continue Shopping
         </Link>

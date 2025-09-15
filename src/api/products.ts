@@ -24,7 +24,7 @@ export async function fetchProducts(): Promise<Product[]> {
   return mockProducts;
 }
 
-export async function fetchProductById(id: number): Promise<Product | null> {
+export async function fetchProductById(id: string): Promise<Product | null> {
   const products = await fetchProducts();
   return products.find((p) => p.id === id) ?? null;
 }
