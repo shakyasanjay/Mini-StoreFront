@@ -8,7 +8,7 @@ export interface Product{
     category: string;
     image: string;
     colors?: string[];
-    sizes?: string[];
+    size?: string[];
     rating?: {rate: number; count: number};
     stock?: number;
 }
@@ -16,4 +16,6 @@ export interface Product{
 export interface CartLine{
     product: Product;
     qty: number;
+    color?: string;
+    size?: string;
 }

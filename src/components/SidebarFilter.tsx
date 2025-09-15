@@ -12,14 +12,14 @@ interface Filters {
   maxPrice?: number;
   inStock?: boolean;
   colors?: string[];
-  sizes?: string[];
+  size?: string[];
 }
 
 const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
   const [, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
-  const [sizes, setSizes] = useState<string[]>([]);
+  const [size, setsize] = useState<string[]>([]);
   const [filters, setFilters] = useState<Filters>({});
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
       // Unique values from products
       setCategories(Array.from(new Set(all.map((p) => p.category))));
       setColors(Array.from(new Set(all.flatMap((p) => p.colors || []))));
-      setSizes(Array.from(new Set(all.flatMap((p) => p.sizes || []))));
+      setsize(Array.from(new Set(all.flatMap((p) => p.size || []))));
     });
   }, []);
 
@@ -39,7 +39,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
     onFilterChange?.(newFilters);
   };
 
-  const toggleArrayFilter = (key: "colors" | "sizes", value: string) => {
+  const toggleArrayFilter = (key: "colors" | "size", value: string) => {
     const current = filters[key] || [];
     const newValues = current.includes(value)
       ? current.filter((v) => v !== value)
@@ -134,17 +134,17 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
         </ul>
       </div>
 
-      {/* Sizes */}
+      {/* size */}
       <div>
-        <h4 className="font-medium mb-2">Sizes</h4>
+        <h4 className="font-medium mb-2">size</h4>
         <ul className="space-y-1">
-          {sizes.map((size) => (
+          {size.map((size) => (
             <li key={size}>
               <label className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  checked={filters.sizes?.includes(size) ?? false}
-                  onChange={() => toggleArrayFilter("sizes", size)}
+                  checked={filters.size?.includes(size) ?? false}
+                  onChange={() => toggleArrayFilter("size", size)}
                 />
                 <span>{size}</span>
               </label>

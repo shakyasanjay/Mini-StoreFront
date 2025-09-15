@@ -14,6 +14,8 @@ const ProductDetail = () => {
   const [related, setRelated] = useState<Product[]>([]);
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -25,11 +27,10 @@ const ProductDetail = () => {
         if (!p) throw new Error("Product not found");
         setProduct(p);
 
-        // Use `p` here instead of product (state isn’t updated yet)
         return fetchProducts().then((all) =>
           all
             .filter((x) => x.category === p.category && x.id !== p.id)
-            .slice(0, 4)
+            .slice(0, 3)
         );
       })
       .then((relatedProducts) => setRelated(relatedProducts))
@@ -64,7 +65,6 @@ const ProductDetail = () => {
             alt={product.title}
             className="w-full h-[480px] object-contain rounded"
           />
-          {/* Thumbnails */}
           <div className="flex space-x-3 mt-4">
             <img
               src={product.image}
@@ -102,12 +102,80 @@ const ProductDetail = () => {
           </p>
 
           {/* Color Selector */}
-          <div className="mt-8">
-            <h3 className="text-sm font-semibold">Color</h3>
-            <div className="flex items-center space-x-2 mt-3">
-              <button className="w-8 h-8 rounded-full border-2 border-blue-600 bg-blue-800"></button>
+          {product.colors && product.colors.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-semibold">Color</h3>
+              <div className="flex items-center space-x-2 mt-3">
+                {product.colors.map((color) => {
+                  const isSelected = selectedColor === color;
+                  const [c1, c2] = color.split("-");
+
+                  return (
+                    <button
+                      key={color}
+                      title={color}
+                      onClick={() => setSelectedColor(color)}
+                      className={`w-8 h-8 rounded-full border-2 ${
+                        isSelected
+                          ? "border-blue-600 ring-2 ring-blue-400"
+                          : "border-gray-300"
+                      } flex items-center justify-center`}
+                      style={{
+                        backgroundColor: color.includes("-")
+                          ? "transparent"
+                          : color,
+                      }}
+                    >
+                      {color.includes("-") && (
+                        <div
+                          className="w-full h-full rounded-full"
+                          style={{
+                            background: `linear-gradient(45deg, ${c1} 50%, ${c2} 50%)`,
+                          }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {selectedColor && (
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                  Selected: <span className="font-medium">{selectedColor}</span>
+                </p>
+              )}
             </div>
-          </div>
+          )}
+
+          {/* Size Selector */}
+          {product.size && product.size.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-semibold">Size</h3>
+              <div className="flex items-center space-x-2 mt-3">
+                {product.size.map((size) => {
+                  const isSelected = selectedSize === size;
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-4 py-2 border rounded text-sm font-medium ${
+                        isSelected
+                          ? "border-blue-600 ring-2 ring-blue-400"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedSize && (
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                  Selected: <span className="font-medium">{selectedSize}</span>
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Quantity Selector */}
           <div className="mt-8">
@@ -135,8 +203,15 @@ const ProductDetail = () => {
           <div className="mt-10">
             <button
               disabled={product.stock === 0}
-              onClick={() => addToCart(product)}
-              className="w-full px-8 py-4 text-lg font-medium rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+              onClick={() =>
+                addToCart(
+                  product,
+                  quantity,
+                  selectedColor ?? undefined,
+                  selectedSize ?? undefined
+                )
+              }
+              className="w-full px-8 py-4 text-lg font-medium rounded bg-amber-500 text-white hover:bg-amber-400 disabled:opacity-50"
             >
               {product.stock === 0 ? "Out of stock" : "Add to cart"}
             </button>

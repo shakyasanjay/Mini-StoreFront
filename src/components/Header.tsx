@@ -14,8 +14,8 @@ const Header = () => {
         </Link>
         <nav className="flex items-center gap-4">
           <Link
-            to="/"
-            className={`text-sm ${loc.pathname === "/" ? "underline" : ""}`}
+            to="/catalog"
+            className={`text-sm ${loc.pathname === "/catalog" ? "underline" : ""}`}
           >
             Catalog
           </Link>

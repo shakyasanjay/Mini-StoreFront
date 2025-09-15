@@ -16,7 +16,9 @@ const CartPage = () => {
       <ul className="space-y-6">
         {lines.map((l) => (
           <li
-            key={l.product.id}
+            key={`${l.product.id}-${l.color ?? "default"}-${
+              l.size ?? "default"
+            }`}
             className="flex items-start justify-between border-b pb-6 last:border-b-0"
           >
             {/* Product Image + Info wrapped in link */}
@@ -31,6 +33,24 @@ const CartPage = () => {
               />
               <div className="flex-1 px-4">
                 <div className="font-medium text-lg">{l.product.title}</div>
+
+                {/* Show color and size in the same line */}
+                {(l.color || l.size) && (
+                  <div className="text-sm text-gray-600">
+                    {l.color && (
+                      <span>
+                        Color: <span className="font-medium">{l.color}</span>
+                      </span>
+                    )}
+                    {l.color && l.size && <span>, </span>}
+                    {l.size && (
+                      <span>
+                        Size: <span className="font-medium">{l.size}</span>
+                      </span>
+                    )}
+                  </div>
+                )}
+
                 <div className="text-sm text-gray-500">
                   {l.product.category}
                 </div>
@@ -44,8 +64,8 @@ const CartPage = () => {
                 ${(l.product.price * l.qty).toFixed(2)}
               </div>
               <button
-                onClick={() => removeFromCart(l.product.id)}
-                className="text-sm text-gray-500 hover:underline mt-2"
+                onClick={() => removeFromCart(l.product.id, l.color, l.size)}
+                className="text-sm text-red-600 hover:underline mt-4"
               >
                 Remove
               </button>

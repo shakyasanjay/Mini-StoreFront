@@ -4,7 +4,7 @@ import type { Product } from "../types";
 
 export default function ProductGrid({ products }: { products: Product[] }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6; // adjust as needed
+  const productsPerPage = 9; // adjust as needed
 
   if (!products.length)
     return <div className="p-8 text-center">No products found.</div>;

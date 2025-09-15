@@ -3,9 +3,19 @@ import type { CartLine, Product } from "../types";
 
 interface CartContextValue {
   lines: CartLine[];
-  addToCart: (product: Product, qty?: number) => void;
-  removeFromCart: (productId: number) => void;
-  updateQty: (productId: number, qty?: number) => void;
+  addToCart: (
+    product: Product,
+    qty?: number,
+    color?: string,
+    size?: string
+  ) => void;
+  removeFromCart: (productId: number, color?: string, size?: string) => void;
+  updateQty: (
+    productId: number,
+    qty?: number,
+    color?: string,
+    size?: string
+  ) => void;
   total: number;
   clear: () => void;
 }
@@ -30,37 +40,56 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem(CART_KEY, JSON.stringify(lines));
   }, [lines]);
 
-  const addToCart = (product: Product, qty = 1) => {
+  const addToCart = (
+    product: Product,
+    qty = 1,
+    color?: string,
+    size?: string
+  ) => {
     setLines((prev) => {
       const idx = prev.findIndex(
-        (l: { product: { id: number } }) => l.product.id === product.id
+        (l) =>
+          l.product.id === product.id && l.color === color && l.size === size
       );
+
       if (idx >= 0) {
         const copy = [...prev];
         copy[idx] = { ...copy[idx], qty: copy[idx].qty + qty };
         return copy;
       }
-      return [...prev, { product, qty }];
+
+      return [...prev, { product, qty, color, size }];
     });
   };
 
-  const removeFromCart = (productId: number) => {
-    setLines((p) => p.filter((l) => l.product.id !== productId));
-  };
-
-  const updateQty = (productId: number, qty?: number) => {
-    if (!qty || qty <= 0) return removeFromCart(productId);
-    setLines((prev) =>
-      prev.map((l) => (l.product.id === productId ? { ...l, qty } : l))
+  const removeFromCart = (productId: number, color?: string, size?: string) => {
+    setLines((p) =>
+      p.filter(
+        (l) =>
+          !(l.product.id === productId && l.color === color && l.size === size)
+      )
     );
   };
 
+  const updateQty = (
+    productId: number,
+    qty?: number,
+    color?: string,
+    size?: string
+  ) => {
+    if (!qty || qty <= 0) return removeFromCart(productId, color, size);
+    setLines((prev) =>
+      prev.map((l) =>
+        l.product.id === productId && l.color === color && l.size === size
+          ? { ...l, qty }
+          : l
+      )
+    );
+  };
 
   const clear = () => setLines([]);
 
   const total = lines.reduce((s, l) => s + l.product.price * l.qty, 0);
-
-  console.log(lines)
 
   return (
     <CartContext.Provider
