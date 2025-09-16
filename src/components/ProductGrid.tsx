@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import type { Product } from "../types";
 
 export default function ProductGrid({ products }: { products: Product[] }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 9; // adjust as needed
+  const productsPerPage = 9;
+
+  // Load page from localStorage, fallback to 1
+  const [currentPage, setCurrentPage] = useState(() => {
+    const saved = localStorage.getItem("currentPage");
+    return saved ? parseInt(saved, 10) : 1;
+  });
+
+  // Persist page to localStorage
+  useEffect(() => {
+    localStorage.setItem("currentPage", currentPage.toString());
+  }, [currentPage]);
 
   if (!products.length)
     return <div className="p-8 text-center">No products found.</div>;
 
-  // Pagination logic
   const totalPages = Math.ceil(products.length / productsPerPage);
   const startIndex = (currentPage - 1) * productsPerPage;
   const currentProducts = products.slice(
@@ -17,13 +26,12 @@ export default function ProductGrid({ products }: { products: Product[] }) {
     startIndex + productsPerPage
   );
 
-  // Helper to check if product is new
   const isNewProduct = (createdAt: string | Date) => {
     const createdDate = new Date(createdAt);
     const now = new Date();
     const diffDays =
       (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
-    return diffDays <= 30; // last 30 days
+    return diffDays <= 30;
   };
 
   return (
@@ -43,15 +51,11 @@ export default function ProductGrid({ products }: { products: Product[] }) {
               to={`/products/${p.id}`}
               className="block relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
             >
-              {/* Badges */}
               {onSale && (
                 <>
-                  {/* Sale Badge */}
                   <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
                     Sale
                   </span>
-
-                  {/* Discount Badge */}
                   {discount && (
                     <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
                       -{discount}%
@@ -60,21 +64,18 @@ export default function ProductGrid({ products }: { products: Product[] }) {
                 </>
               )}
 
-              {/* New Badge (only if created within last 30 days) */}
               {!onSale && isNew && (
                 <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded">
                   New
                 </span>
               )}
 
-              {/* Product Image */}
               <img
                 src={p.image}
                 alt={p.title}
                 className="w-full h-72 object-cover"
               />
 
-              {/* Product Info */}
               <div className="p-4">
                 <h3 className="text-sm font-medium text-white">{p.title}</h3>
                 <div className="mt-1 flex items-center gap-2">
@@ -93,13 +94,16 @@ export default function ProductGrid({ products }: { products: Product[] }) {
         })}
       </div>
 
-      {/* Pagination Controls */}
+      {/* pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center mt-6 space-x-2">
           {Array.from({ length: totalPages }, (_, idx) => (
             <button
               key={idx}
-              onClick={() => setCurrentPage(idx + 1)}
+              onClick={() => {
+                setCurrentPage(idx + 1);
+                window.scrollTo({ top: 0, }); // 👈 scroll to top
+              }}
               className={`px-3 py-1 border rounded ${
                 currentPage === idx + 1
                   ? "bg-blue-500 text-white"

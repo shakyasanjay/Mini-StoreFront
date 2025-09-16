@@ -6,7 +6,7 @@ import type { Product } from "../../types";
 import { fetchProductById, fetchProducts } from "../../api/products";
 import LoadingSkeleton from "../LoadingSkeleton";
 import ProductImages from "../ProductImages";
-import Toast from "../Toast"; // ✅ import Toast
+import Toast from "../Toast";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +19,7 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  // ✅ Toast state
+  //  Toast state
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastType, setToastType] = useState<"success" | "error">("success");
 
@@ -46,7 +46,7 @@ const ProductDetail = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  // ✅ Handle Add to Cart with toast
+  //  Handle Add to Cart with toast
   const handleAddToCart = () => {
     try {
       addToCart(
@@ -100,7 +100,7 @@ const ProductDetail = () => {
             {product.title}
           </h1>
 
-          {/* ✅ Stock Status */}
+          {/* Stock Status */}
           {product.stock !== undefined && (
             <p
               className={`text-sm font-semibold mb-4 ${
@@ -117,7 +117,7 @@ const ProductDetail = () => {
             {product.description}
           </p>
 
-          {/* ✅ Show selectors & Add to Cart ONLY if stock > 0 */}
+          {/* Show selectors & Add to Cart ONLY if stock > 0 */}
           {product.stock && product.stock > 0 ? (
             <>
               {/* Size Selector */}
@@ -197,7 +197,7 @@ const ProductDetail = () => {
               </button>
             </>
           ) : (
-            // ✅ Out of Stock Button
+            // Out of Stock Button
             <button
               disabled
               className="mt-8 w-full py-3 bg-gray-500 rounded-lg text-lg font-medium cursor-not-allowed"
@@ -237,7 +237,7 @@ const ProductDetail = () => {
         </section>
       )}
 
-      {/* ✅ Toast component */}
+      {/*  Toast component */}
       <Toast message={toastMessage ?? ""} type={toastType} />
     </main>
   );
