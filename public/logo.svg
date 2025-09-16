@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
+  <rect width="200" height="240" fill="none"/>
+  <!-- Storefront base -->
+  <rect x="40" y="90" width="120" height="80" rx="8" fill="#f59e0b"/>
+  <!-- Door -->
+  <rect x="90" y="120" width="20" height="50" fill="white"/>
+  <!-- Awning stripes -->
+  <path d="M40 90 L60 60 L80 90 Z" fill="white"/>
+  <path d="M80 90 L100 60 L120 90 Z" fill="white"/>
+  <path d="M120 90 L140 60 L160 90 Z" fill="white"/>
+  <!-- Roof line -->
+  <rect x="40" y="85" width="120" height="5" fill="#d97706"/>
+  <!-- Brand text -->
+  <text x="100" y="220" font-size="18" font-family="Arial, sans-serif" text-anchor="middle" fill="#f59e0b">Mini Storefront</text>
+</svg>

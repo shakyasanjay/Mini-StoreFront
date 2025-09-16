@@ -19,9 +19,12 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  //  Toast state
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [toastType, setToastType] = useState<"success" | "error">("success");
+  // Toast state
+  const [toast, setToast] = useState<{
+    id: number;
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -46,7 +49,7 @@ const ProductDetail = () => {
       .finally(() => setLoading(false));
   }, [id]);
 
-  //  Handle Add to Cart with toast
+  // Handle Add to Cart with toast
   const handleAddToCart = () => {
     try {
       addToCart(
@@ -55,11 +58,17 @@ const ProductDetail = () => {
         selectedColor ?? undefined,
         selectedSize ?? undefined
       );
-      setToastType("success");
-      setToastMessage("Item added to cart!");
+      setToast({
+        id: Date.now(),
+        message: "Item added to cart!",
+        type: "success",
+      });
     } catch {
-      setToastType("error");
-      setToastMessage("Failed to add item to cart.");
+      setToast({
+        id: Date.now(),
+        message: "Failed to add item to cart.",
+        type: "error",
+      });
     }
   };
 
@@ -107,9 +116,7 @@ const ProductDetail = () => {
                 product.stock > 0 ? "text-green-400" : "text-red-500"
               }`}
             >
-              {product.stock > 0
-                ? `In Stock`
-                : "Out of Stock"}
+              {product.stock > 0 ? `In Stock` : "Out of Stock"}
             </p>
           )}
 
@@ -237,8 +244,10 @@ const ProductDetail = () => {
         </section>
       )}
 
-      {/*  Toast component */}
-      <Toast message={toastMessage ?? ""} type={toastType} />
+      {/* Toast */}
+      {toast && (
+        <Toast key={toast.id} message={toast.message} type={toast.type} />
+      )}
     </main>
   );
 };

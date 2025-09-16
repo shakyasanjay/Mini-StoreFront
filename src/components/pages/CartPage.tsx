@@ -6,7 +6,13 @@ import { GiShoppingBag } from "react-icons/gi";
 
 const CartPage = () => {
   const { lines, removeFromCart, total } = useCart();
-  const [toast, setToast] = useState<string>("");
+
+  // Toast state
+  const [toast, setToast] = useState<{
+    id: number;
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   const salesTaxRate = 0.06;
   const salesTax = total * salesTaxRate;
@@ -14,15 +20,18 @@ const CartPage = () => {
 
   const handleRemove = (id: string, color?: string, size?: string) => {
     removeFromCart(id, color, size);
-    setToast("Item removed from cart");
-    setTimeout(() => setToast(""), 5000);
+    setToast({
+      id: Date.now(),
+      message: "Item removed from cart",
+      type: "success",
+    });
   };
 
   // ✅ Show nice empty cart screen when no items
   if (!lines.length)
     return (
       <main className="flex flex-col items-center justify-center h-[70vh] text-center text-gray-300">
-        <GiShoppingBag  className="w-16 h-16 mb-4 opacity-70" />
+        <GiShoppingBag className="w-16 h-16 mb-4 opacity-70" />
         <p className="text-lg font-medium">No items in cart</p>
         <Link
           to="/products"
@@ -132,7 +141,9 @@ const CartPage = () => {
       </div>
 
       {/* Toast */}
-      <Toast message={toast} />
+      {toast && (
+        <Toast key={toast.id} message={toast.message} type={toast.type} />
+      )}
     </main>
   );
 };

@@ -76,7 +76,6 @@ const Catalog = ({ gender }: { gender?: string }) => {
         (p.colors ?? []).some((c) => selectedColors.includes(c))
       );
 
-    // ✅ apply price filter only if user entered values
     res = res.filter(
       (p) =>
         (priceRange[0] === "" || p.price >= priceRange[0]) &&
@@ -137,68 +136,118 @@ const Catalog = ({ gender }: { gender?: string }) => {
         {/* Sidebar */}
         <aside className="md:col-span-1 space-y-6">
           {/* Categories */}
-          <div>
-            <h3 className="font-medium mb-2">Collections</h3>
-            <ul className="space-y-2 text-sm">
+          <div className="bg-gray-900 rounded-2xl p-4 shadow-sm">
+            <h3 className="font-semibold text-lg mb-3 border-b border-gray-700 pb-2">
+              Collections
+            </h3>
+            <div className="space-y-2">
               {categories.map((c) => (
-                <li
+                <label
                   key={c}
-                  className={`cursor-pointer ${
-                    selectedCategories.includes(c)
-                      ? "text-green-400 font-semibold"
-                      : "text-blue-400 hover:underline"
-                  }`}
-                  onClick={() => toggleCategory(c)}
+                  className="flex items-center justify-between cursor-pointer text-sm px-2 py-1 rounded hover:bg-gray-800 transition-colors"
                 >
-                  {c}
-                </li>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedCategories.includes(c)}
+                      onChange={() => toggleCategory(c)}
+                      className="accent-green-500"
+                    />
+                    <span
+                      className={`${
+                        selectedCategories.includes(c)
+                          ? "text-green-400 font-semibold"
+                          : "text-amber-400"
+                      }`}
+                    >
+                      {c}
+                    </span>
+                  </div>
+                  <span className="ml-2 text-gray-500 text-xs">
+                    ({all.filter((p) => p.category === c).length})
+                  </span>
+                </label>
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Size */}
-          <div>
-            <h3 className="font-medium mb-2">Size</h3>
-            <ul className="space-y-2 text-sm">
+          <div className="bg-gray-900 rounded-2xl p-4 shadow-sm">
+            <h3 className="font-semibold text-lg mb-3 border-b border-gray-700 pb-2">
+              Size
+            </h3>
+            <div className="space-y-2">
               {size.map((s) => (
-                <li
+                <label
                   key={s}
-                  className={`cursor-pointer ${
-                    selectedsize.includes(s)
-                      ? "text-green-400 font-semibold"
-                      : "text-blue-400 hover:underline"
-                  }`}
-                  onClick={() => toggleSize(s)}
+                  className="flex items-center justify-between cursor-pointer text-sm px-2 py-1 rounded hover:bg-gray-800 transition-colors"
                 >
-                  {s}
-                </li>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedsize.includes(s)}
+                      onChange={() => toggleSize(s)}
+                      className="accent-green-500"
+                    />
+                    <span
+                      className={`${
+                        selectedsize.includes(s)
+                          ? "text-green-400 font-semibold"
+                          : "text-amber-400"
+                      }`}
+                    >
+                      {s}
+                    </span>
+                  </div>
+                  <span className="ml-2 text-gray-500 text-xs">
+                    ({all.filter((p) => (p.size ?? []).includes(s)).length})
+                  </span>
+                </label>
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Colors */}
-          <div>
-            <h3 className="font-medium mb-2">Colors</h3>
-            <ul className="space-y-2 text-sm">
+          <div className="bg-gray-900 rounded-2xl p-4 shadow-sm">
+            <h3 className="font-semibold text-lg mb-3 border-b border-gray-700 pb-2">
+              Colors
+            </h3>
+            <div className="space-y-2">
               {colors.map((c) => (
-                <li
+                <label
                   key={c}
-                  className={`cursor-pointer ${
-                    selectedColors.includes(c)
-                      ? "text-green-400 font-semibold"
-                      : "text-blue-400 hover:underline"
-                  }`}
-                  onClick={() => toggleColor(c)}
+                  className="flex items-center justify-between cursor-pointer text-sm px-2 py-1 rounded hover:bg-gray-800 transition-colors"
                 >
-                  {c}
-                </li>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedColors.includes(c)}
+                      onChange={() => toggleColor(c)}
+                      className="accent-green-500"
+                    />
+                    <span
+                      className={`${
+                        selectedColors.includes(c)
+                          ? "text-green-400 font-semibold"
+                          : "text-amber-400"
+                      }`}
+                    >
+                      {c}
+                    </span>
+                  </div>
+                  <span className="ml-2 text-gray-500 text-xs">
+                    ({all.filter((p) => (p.colors ?? []).includes(c)).length})
+                  </span>
+                </label>
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Price Range */}
-          <div>
-            <h3 className="font-medium mb-2">Price</h3>
+          <div className="bg-gray-900 rounded-2xl p-4 shadow-sm">
+            <h3 className="font-semibold text-lg mb-3 border-b border-gray-700 pb-2">
+              Price
+            </h3>
             <div className="flex space-x-2 text-sm">
               <input
                 type="number"

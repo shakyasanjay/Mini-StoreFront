@@ -41,9 +41,9 @@ const Toast = ({ message, type = "success" }: ToastProps) => {
     >
       {/* Icon */}
       {type === "success" ? (
-        <IoMdCheckmark  className="w-5 h-5" />
+        <IoMdCheckmark className="w-5 h-5" />
       ) : (
-        <RxCross2  className="w-5 h-5" />
+        <RxCross2 className="w-5 h-5" />
       )}
 
       {/* Message */}
