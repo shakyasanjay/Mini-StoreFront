@@ -8,21 +8,25 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
-    <article className="border rounded p-3 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow">
+    <article className="bg-white text-black rounded-md shadow-sm hover:shadow-md transition w-full">
       <Link to={`/product/${product.id}`} aria-label={`Open ${product.title}`}>
         <img
           src={product.image}
           alt={product.title}
-          className="w-full h-48 object-cover rounded"
+          className="w-full h-64 object-contain bg-white rounded-t"
         />
-        <h3 className="mt-2 text-sm font-medium">{product.title}</h3>
+        <h3 className="mt-2 text-sm font-medium px-2 truncate">
+          {product.title}
+        </h3>
       </Link>
-      <div className="mt-2 flex items-center justify-between">
-        <div className="text-lg font-semibold">${product.price.toFixed(2)}</div>
-        <div className="text-xs text-gray-500">{product.category}</div>
+      <div className="mt-1 px-2 pb-3">
+        <div className="text-base font-semibold">
+          ${product.price.toFixed(2)}
+        </div>
       </div>
     </article>
   );
 };
+
 
 export default ProductCard;
