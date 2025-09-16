@@ -12,7 +12,7 @@ const CartPage = () => {
   const salesTax = total * salesTaxRate;
   const shipping = 0;
 
-  const handleRemove = (id: number, color?: string, size?: string) => {
+  const handleRemove = (id: string, color?: string, size?: string) => {
     removeFromCart(id, color, size);
     setToast("Item removed from cart");
     setTimeout(() => setToast(""), 5000);

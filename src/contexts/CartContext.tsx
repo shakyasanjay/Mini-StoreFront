@@ -9,9 +9,9 @@ interface CartContextValue {
     color?: string,
     size?: string
   ) => void;
-  removeFromCart: (productId: number, color?: string, size?: string) => void;
+  removeFromCart: (productId: string, color?: string, size?: string) => void;
   updateQty: (
-    productId: number,
+    productId: string,
     qty?: number,
     color?: string,
     size?: string
@@ -62,7 +62,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  const removeFromCart = (productId: number, color?: string, size?: string) => {
+  const removeFromCart = (productId: string, color?: string, size?: string) => {
     setLines((p) =>
       p.filter(
         (l) =>
@@ -72,7 +72,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const updateQty = (
-    productId: number,
+    productId: string,
     qty?: number,
     color?: string,
     size?: string
