@@ -2,16 +2,10 @@ import { NavLink } from "react-router-dom";
 
 const HeroBanner = () => {
   return (
-    <section className="relative w-full h-[600px]">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            'url("https://www.freepik.com/free-photo/t-shirt-with-pants-and-shoes-on-wooden-background_12345678.htm")',
-        }}
-      ></div>
-
+    <section
+      className="relative w-full h-[450px] bg-cover bg-center"
+      style={{ backgroundImage: "url('/banner2.png')" }}
+    >
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/40"></div>
 

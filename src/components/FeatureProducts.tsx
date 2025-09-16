@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import type { Product } from "../types";
-import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
 import {
   IoIosArrowDropleftCircle,
@@ -8,12 +7,12 @@ import {
 } from "react-icons/io";
 
 interface FeaturedProductsProps {
-  products: Product[]; // ✅ full product list from parent
-  gender?: string; // ✅ optional: "men" | "women" | "kids"
-  title: string; // ✅ section title (ex: "Men's Collection")
-  subtitle?: string; // ✅ optional subtitle text
-  limit?: number; // ✅ optional: number of products to show
-  seeAllLink?: string; // ✅ optional: link to "see all" page
+  products: Product[];
+  gender?: string;
+  title: string;
+  subtitle?: string;
+  limit?: number;
+  seeAllLink?: string;
 }
 
 const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
@@ -21,33 +20,30 @@ const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   gender,
   title,
   subtitle,
-  limit = 5, 
+  limit = 5,
   seeAllLink,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  // ✅ Filter by gender (if provided), sort by latest, and limit
-const filteredProducts = products
-  .filter((product) => {
-    if (!gender) return true;
-    const g = product.gender;
+  // Filter by gender, sort by latest, and limit
+  const filteredProducts = products
+    .filter((product) => {
+      if (!gender) return true;
+      const g = product.gender;
+      if (Array.isArray(g)) {
+        return g.some((item) => item.toLowerCase() === gender.toLowerCase());
+      }
+      return g?.toLowerCase() === gender.toLowerCase();
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.create_at).getTime() - new Date(a.create_at).getTime()
+    )
+    .slice(0, limit);
 
-    if (Array.isArray(g)) {
-      // if gender is an array
-      return g.some((item) => item.toLowerCase() === gender.toLowerCase());
-    }
-
-    // if gender is a string
-    return g?.toLowerCase() === gender.toLowerCase();
-  })
-  .sort(
-    (a, b) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime()
-  )
-  .slice(0, limit);
-
-
+  // scroll check
   const checkScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -77,6 +73,15 @@ const filteredProducts = products
         behavior: "smooth",
       });
     }
+  };
+
+  // utility: is new product?
+  const isNewProduct = (createdAt: string | Date) => {
+    const createdDate = new Date(createdAt);
+    const now = new Date();
+    const diffDays =
+      (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+    return diffDays <= 30;
   };
 
   return (
@@ -117,17 +122,70 @@ const filteredProducts = products
         </button>
       )}
 
-      {/* Product list */}
+      {/* Product list (same UI as ProductGrid) */}
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth"
+        className="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth"
       >
         {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <div key={product.id} className="w-[220px] flex-shrink-0">
-              <ProductCard product={product} />
-            </div>
-          ))
+          filteredProducts.map((p) => {
+            const onSale = p.compare_price && p.compare_price > p.price;
+            const discount =
+              onSale &&
+              Math.round(
+                ((p.compare_price! - p.price) / p.compare_price!) * 100
+              );
+            const isNew = p.create_at && isNewProduct(p.create_at);
+
+            return (
+              <Link
+                key={p.id}
+                to={`/products/${p.id}`}
+                className="block relative w-[220px] flex-shrink-0 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
+              >
+                {onSale && (
+                  <>
+                    <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                      Sale
+                    </span>
+                    {discount && (
+                      <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                        -{discount}%
+                      </span>
+                    )}
+                  </>
+                )}
+
+                {!onSale && isNew && (
+                  <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                    New
+                  </span>
+                )}
+
+                <img
+                  src={p.image}
+                  alt={p.title}
+                  className="w-full h-72 object-cover"
+                />
+
+                <div className="p-4">
+                  <h3 className="text-sm font-medium text-white truncate">
+                    {p.title}
+                  </h3>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="text-white font-semibold">
+                      ${p.price.toFixed(2)}
+                    </span>
+                    {onSale && (
+                      <span className="text-gray-500 line-through text-sm">
+                        ${p.compare_price!.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            );
+          })
         ) : (
           <p className="text-gray-400 text-center w-full">
             No products available.

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import type { Product } from "../types";
 
 export default function ProductGrid({ products }: { products: Product[] }) {
@@ -46,7 +46,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
           const isNew = p.create_at && isNewProduct(p.create_at);
 
           return (
-            <Link
+            <NavLink
               key={p.id}
               to={`/products/${p.id}`}
               className="block relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
@@ -89,7 +89,7 @@ export default function ProductGrid({ products }: { products: Product[] }) {
                   )}
                 </div>
               </div>
-            </Link>
+            </NavLink>
           );
         })}
       </div>

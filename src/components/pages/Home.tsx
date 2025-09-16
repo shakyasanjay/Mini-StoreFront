@@ -10,7 +10,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     fetchProducts()
-      .then((res) => setProducts(res)) // ✅ get ALL products, not just first 8
+      .then((res) => setProducts(res))
       .finally(() => setLoading(false));
   }, []);
 
@@ -21,23 +21,23 @@ const Home: React.FC = () => {
         <div className="text-center py-12">Loading featured products...</div>
       ) : (
         <>
-          {/* ✅ Men's Collection */}
+          {/* Men's Collection */}
           <FeaturedProducts
             products={products}
             gender="men"
             title="Men’s Collection"
             subtitle="Latest men's arrivals"
-            limit={4} // ✅ only show latest 4 men's products
-            seeAllLink="/collection/mens"
+            limit={5} 
+            seeAllLink="/men"
           />
 
-          {/* ✅ Women's Collection */}
+          {/* Women's Collection */}
           <FeaturedProducts
             products={products}
             gender="women"
             title="Women’s Collection"
             subtitle="Latest women's arrivals"
-            limit={4}
+            limit={7}
             seeAllLink="/women"
           />
         </>

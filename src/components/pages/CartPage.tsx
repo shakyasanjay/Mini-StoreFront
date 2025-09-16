@@ -27,7 +27,7 @@ const CartPage = () => {
     });
   };
 
-  // ✅ Show nice empty cart screen when no items
+  // Show nice empty cart screen when no items
   if (!lines.length)
     return (
       <main className="flex flex-col items-center justify-center h-[70vh] text-center text-gray-300">

@@ -4,6 +4,7 @@ import { fetchProducts } from "../../api/products";
 import LoadingSkeleton from "../LoadingSkeleton";
 import ProductGrid from "../ProductGrid";
 import { useDebounce } from "../../hooks/useDebounce";
+import { TbMoodEmptyFilled } from "react-icons/tb";
 
 const Catalog = ({ gender }: { gender?: string }) => {
   const [all, setAll] = useState<Product[]>([]);
@@ -110,6 +111,15 @@ const Catalog = ({ gender }: { gender?: string }) => {
     setSelectedColors((prev) =>
       prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]
     );
+
+  // Reset filters
+  const resetFilters = () => {
+    setSelectedCategories([]);
+    setSelectedsize([]);
+    setSelectedColors([]);
+    setPriceRange(["", ""]);
+    setQuery("");
+  };
 
   return (
     <main className="max-w-7xl mx-auto px-4 py-12">
@@ -232,7 +242,7 @@ const Catalog = ({ gender }: { gender?: string }) => {
                           : "text-amber-400"
                       }`}
                     >
-                      {c}
+                      {c.charAt(0).toUpperCase() + c.slice(1)}
                     </span>
                   </div>
                   <span className="ml-2 text-gray-500 text-xs">
@@ -289,12 +299,7 @@ const Catalog = ({ gender }: { gender?: string }) => {
             priceRange[1] !== "") && (
             <button
               className="mt-4 text-xs text-red-400 hover:underline"
-              onClick={() => {
-                setSelectedCategories([]);
-                setSelectedsize([]);
-                setSelectedColors([]);
-                setPriceRange(["", ""]);
-              }}
+              onClick={resetFilters}
             >
               Clear all filters
             </button>
@@ -332,7 +337,29 @@ const Catalog = ({ gender }: { gender?: string }) => {
               {error}
             </div>
           )}
-          {!loading && !error && <ProductGrid products={filtered} />}
+          {!loading &&
+            !error &&
+            (filtered.length > 0 ? (
+              <ProductGrid products={filtered} />
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <TbMoodEmptyFilled className="w-16 h-16 text-gray-500 mb-4" />
+                <h3 className="text-xl font-semibold text-white">
+                  No products found
+                </h3>
+                <p className="text-gray-400 mt-2 max-w-sm">
+                  We couldn’t find any items that match your filters. Try
+                  adjusting your search or clear all filters to see more
+                  products.
+                </p>
+                <button
+                  onClick={resetFilters}
+                  className="mt-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            ))}
         </section>
       </div>
     </main>

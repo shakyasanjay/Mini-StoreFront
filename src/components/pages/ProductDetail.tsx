@@ -37,10 +37,15 @@ const ProductDetail = () => {
         if (!p) throw new Error("Product not found");
         setProduct(p);
 
-        // Fetch related products
+        // ✅ Fetch related products by gender + category
         return fetchProducts().then((all) =>
           all
-            .filter((x) => x.category === p.category && x.id !== p.id)
+            .filter(
+              (x) =>
+                x.id !== p.id &&
+                x.gender === p.gender &&
+                x.category === p.category
+            )
             .slice(0, 3)
         );
       })
@@ -75,7 +80,7 @@ const ProductDetail = () => {
   if (loading)
     return (
       <div className="p-8">
-        <LoadingSkeleton />
+        <LoadingSkeleton variant="detail" />
       </div>
     );
 
@@ -89,7 +94,7 @@ const ProductDetail = () => {
   if (!product) return <div className="p-4">No product found.</div>;
 
   return (
-    <main className="w-full px-6 py-8 text-white bg-[#0a0f1a] min-h-screen">
+    <main className="max-w-full px-6 py-8 text-white bg-[#0a0f1a] min-h-screen">
       {/* Back Button */}
       <Link
         to="/products"
@@ -198,7 +203,7 @@ const ProductDetail = () => {
                   (!!product.size?.length && !selectedSize)
                 }
                 onClick={handleAddToCart}
-                className="mt-8 w-full py-3 bg-green-500 hover:bg-green-400 rounded-lg text-lg font-medium disabled:opacity-50 flex items-center justify-center"
+                className="mt-8 w-full py-3 bg-amber-500 hover:bg-amber-400 rounded-lg text-lg font-medium disabled:opacity-50 flex items-center justify-center"
               >
                 Add to cart
               </button>
@@ -215,34 +220,80 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Related Products */}
-      {related.length > 0 && (
-        <section className="mt-16">
-          <h2 className="text-2xl font-semibold mb-6">Related Products</h2>
-          <div className="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide">
-            {related.map((item) => (
-              <div
-                key={item.id}
-                className="min-w-[220px] bg-white rounded-lg shadow-md overflow-hidden flex-shrink-0"
-              >
-                <Link to={`/products/${item.id}`} className="block">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm text-gray-700 mt-1">${item.price}</p>
-                  </div>
-                </Link>
+{/* Related Products */}
+{related.length > 0 && (
+  <section className="mt-16">
+    <h2 className="text-2xl font-semibold mb-6">Related Products</h2>
+    <div className="flex gap-4">
+      {related.map((p) => {
+        const onSale = p.compare_price && p.compare_price > p.price;
+        const discount =
+          onSale &&
+          Math.round(((p.compare_price! - p.price) / p.compare_price!) * 100);
+        const isNew =
+          p.create_at &&
+          (() => {
+            const createdDate = new Date(p.create_at);
+            const now = new Date();
+            const diffDays =
+              (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+            return diffDays <= 30;
+          })();
+
+        return (
+          <Link
+            key={p.id}
+            to={`/products/${p.id}`}
+            className="block relative rounded-lg overflow-hidden shadow-sm hover:shadow-md transition"
+          >
+            {/* Badges */}
+            {onSale && (
+              <>
+                <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                  Sale
+                </span>
+                {discount && (
+                  <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                    -{discount}%
+                  </span>
+                )}
+              </>
+            )}
+
+            {!onSale && isNew && (
+              <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                New
+              </span>
+            )}
+
+            {/* Product Image */}
+            <img
+              src={p.image}
+              alt={p.title}
+              className="w-full h-72 object-cover"
+            />
+
+            {/* Product Info */}
+            <div className="p-4">
+              <h3 className="text-sm font-medium text-white">{p.title}</h3>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="text-white font-semibold">
+                  ${p.price.toFixed(2)}
+                </span>
+                {onSale && (
+                  <span className="text-gray-500 line-through text-sm">
+                    ${p.compare_price!.toFixed(2)}
+                  </span>
+                )}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  </section>
+)}
+
 
       {/* Toast */}
       {toast && (
